@@ -5,9 +5,12 @@ const buttonEl = document.querySelector('[data-action="close-lightbox"]');
 const overlayEl = document.querySelector(".lightbox__overlay");
 const lightboxEl = document.querySelector(".lightbox");
 const lightboxImageEl = document.querySelector(".lightbox__image");
+
+
+
 //Создание и рендер разметки по массиву данных и предоставленному шаблону.
 
-const makePhotoCard = (photo) => {
+const makePhotoCard = (photo, index) => {
   const itemEl = createElement('li');
   itemEl.classList.add("gallery__item");
   
@@ -16,7 +19,7 @@ const makePhotoCard = (photo) => {
   linkEl.classList.add("gallery__link");
   linkEl.addEventListener("click", (event) => event.preventDefault());
 
-  const imageAtts = { src: photo.preview, 'data-source': photo.original, alt: photo.description };
+  const imageAtts = { src: photo.preview, 'data-index': index, 'data-source': photo.original, alt: photo.description };
   const imageEl = createElement('img', imageAtts)
   imageEl.classList.add("gallery__image");
 
@@ -59,14 +62,15 @@ function onImageClick(event) {
   if (event.target.nodeName !== "IMG") {
     return;
   }
-
+  let currentIndex = event.target.dataset.index;
   const cardEl = event.target;
   const imageUrl = cardEl.dataset.source;
-  const parentCard = cardEl.closest(".gallery__item");
+  const imageAlt = cardEl.getAttribute('alt');
 
+  // const parentCard = cardEl.closest(".gallery__item");
   openModal();
-  changesValueAttribute(imageUrl);
-  return cardEl;
+  changesValueAttribute(imageUrl, imageAlt);
+  
 }
 
 //Открытие модального окна по клику на элементе галереи.
@@ -76,8 +80,9 @@ function openModal() {
 }
 
 //Подмена значения атрибута src элемента img.lightbox__image.
-function changesValueAttribute(target) {
- lightboxImageEl.setAttribute("src", `${target}`);
+function changesValueAttribute(url, alt) {
+  lightboxImageEl.setAttribute("src", `${url}`);
+  lightboxImageEl.setAttribute("alt", `${alt}`);
 }
 
 function onButtonClick(event) {
@@ -96,7 +101,8 @@ function closeModal() {
 
 //Очистка значения атрибута src элемента img.lightbox__image.
 function attributeClearing() {
- lightboxImageEl.setAttribute("src", "");
+  lightboxImageEl.removeAttribute("src");
+  lightboxImageEl.removeAttribute("alt");
 }
 
 function onOverlayClick(event) {
@@ -112,3 +118,38 @@ function onEscKeyDown(event) {
     attributeClearing();
   }
 }
+ 
+//cлайдер
+const sliderControllLeft = document.querySelector('.slider__control_left');
+const sliderControllRight = document.querySelector('.slider__control_right');
+sliderControllLeft.addEventListener('click', previousImage)
+sliderControllRight.addEventListener('click', nextImage)
+
+function previousImage(event) {
+
+  let index = photos.findIndex((el) => {
+    return el.original === lightboxImageEl.getAttribute("src");
+  });
+if (index <= photos.length && index >= 0) {
+    index -= 1;
+  } else { return; }
+  const previousPic = photos[index].original;
+  lightboxImageEl.setAttribute("src", previousPic);
+}
+
+function nextImage(event) {
+  
+  let index = photos.findIndex((el) => {
+    return el.original === lightboxImageEl.getAttribute("src");
+  });
+  
+  if (index <= photos.length && index >= 0) {
+    index += 1;
+  } else { return; }
+  
+  const previousPic = photos[index].original;
+  lightboxImageEl.setAttribute("src", previousPic);
+
+}
+
+
