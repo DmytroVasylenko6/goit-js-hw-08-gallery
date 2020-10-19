@@ -20,9 +20,24 @@ const makePhotoCard = (photo, index) => {
   linkEl.classList.add("gallery__link");
   linkEl.addEventListener("click", (event) => event.preventDefault());
 
-  const imageAtts = { src: photo.preview, 'data-index': index, 'data-source': photo.original, alt: photo.description };
+  const imageAtts = { "data-src": photo.preview, 'data-index': index, 'data-source': photo.original, alt: photo.description };
   const imageEl = createElement('img', imageAtts)
-  imageEl.classList.add("gallery__image");
+  imageEl.classList.add("gallery__image", "lazyload");
+  imageEl.setAttribute('loading', 'lazy');
+  
+
+  if ('loading' in HTMLImageElement.prototype) {
+    console.log('Браузер поддерживает');
+    imageEl.src = imageEl.dataset.src;
+  } else if (document.querySelector('.script-lazyload') === null) {
+    const script = document.createElement('script')
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.2.2/lazysizes.min.js";
+    script.integrity = "sha512-TmDwFLhg3UA4ZG0Eb4MIyT1O1Mb+Oww5kFG0uHqXsdbyZz9DcvYQhKpGgNkamAI6h2lGGZq2X8ftOJvF/XjTUg==";
+    script.crossorigin = "anonymous"
+    script.class = "script-lazyload"
+    document.body.appendChild(script)
+    console.log('Браузер НЕ поддерживает');
+  }
 
   // const itemEl = document.createElement("li");
   // itemEl.classList.add("gallery__item");
@@ -131,19 +146,28 @@ function onKeyDown(event) {
 function next() {
   
   const nextIndex = ++index;
-  photos[nextIndex]
-    ? lightboxImageEl.src = photos[nextIndex].original
-    : index = 0, lightboxImageEl.src = photos[index].original
- 
+  if (photos[nextIndex]) {
+    lightboxImageEl.src = photos[nextIndex].original;
+    lightboxImageEl.alt = photos[nextIndex].description
+  }
+  else {
+    index = 0, lightboxImageEl.src = photos[index].original;
+    lightboxImageEl.alt = photos[index].description
+  }
 }
+
 function prev() {
   
   const prevIndex = --index;
-  photos[prevIndex]
-    ? lightboxImageEl.src = photos[prevIndex].original
-    : index = photos.length - 1, lightboxImageEl.src = photos[index].original
+  if (photos[prevIndex]) {
+    lightboxImageEl.src = photos[prevIndex].original;
+    lightboxImageEl.alt = photos[prevIndex].description
+  } else {
+    index = photos.length - 1, lightboxImageEl.src = photos[index].original;
+    lightboxImageEl.alt = photos[index].description
+  }
 }
- 
+    
 //cлайдер
 
 
