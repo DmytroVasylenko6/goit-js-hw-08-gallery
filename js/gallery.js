@@ -5,24 +5,23 @@ const buttonEl = document.querySelector('[data-action="close-lightbox"]');
 const overlayEl = document.querySelector(".lightbox__overlay");
 const lightboxEl = document.querySelector(".lightbox");
 const lightboxImageEl = document.querySelector(".lightbox__image");
-const sliderControllLeft = document.querySelector('.slider__control_left');
-const sliderControllRight = document.querySelector('.slider__control_right');
+const sliderControlLeft = document.querySelector('.slider__control_left');
+const sliderControlRight = document.querySelector('.slider__control_right');
 let index = 0;
 
-//Создание и рендер разметки по массиву данных и предоставленному шаблону.
 
 const makePhotoCard = (photo, index) => {
   const itemEl = createElement('li');
-  itemEl.classList.add("gallery__item");
+  itemEl.classList.add("gallery-item");
   
   const linkAtts = {href: photo.original}
   const linkEl = createElement('a', linkAtts)
-  linkEl.classList.add("gallery__link");
+  linkEl.classList.add("gallery-link");
   linkEl.addEventListener("click", (event) => event.preventDefault());
 
   const imageAtts = { "data-src": photo.preview, 'data-index': index, 'data-source': photo.original, alt: photo.description };
   const imageEl = createElement('img', imageAtts)
-  imageEl.classList.add("gallery__image", "lazyload");
+  imageEl.classList.add("gallery-image", "lazyload");
   imageEl.setAttribute('loading', 'lazy');
   
 
@@ -40,15 +39,15 @@ const makePhotoCard = (photo, index) => {
   }
 
   // const itemEl = document.createElement("li");
-  // itemEl.classList.add("gallery__item");
+  // itemEl.classList.add("gallery-item");
 
   // const linkEl = document.createElement("a");
-  // linkEl.classList.add("gallery__link");
+  // linkEl.classList.add("gallery-link");
   // linkEl.setAttribute("href", `${photo.original}`);
   // linkEl.addEventListener("click", (event) => event.preventDefault());
 
   // const imageEl = document.createElement("img");
-  // imageEl.classList.add("gallery__image");
+  // imageEl.classList.add("gallery-image");
   // imageEl.setAttribute("src", `${photo.preview}`);
   // imageEl.setAttribute("data-source", `${photo.original}`);
   // imageEl.setAttribute("alt", `${photo.description}`);
@@ -83,22 +82,19 @@ function onImageClick(event) {
   const imageUrl = event.target.dataset.source;
   const imageAlt = event.target.getAttribute('alt');
 
-  // const parentCard = cardEl.closest(".gallery__item");
   openModal();
   changesValueAttribute(imageUrl, imageAlt);
   index = +event.target.dataset.index;
 }
 
-//Открытие модального окна по клику на элементе галереи.
 function openModal() {
   window.addEventListener("keydown", onKeyDown);
   overlayEl.addEventListener("click", onOverlayClick);
-  sliderControllLeft.addEventListener('click', prev);
-  sliderControllRight.addEventListener('click', next);
+  sliderControlLeft.addEventListener('click', prev);
+  sliderControlRight.addEventListener('click', next);
   lightboxEl.classList.add("is-open");
 }
 
-//Подмена значения атрибута src элемента img.lightbox__image.
 function changesValueAttribute(url, alt) {
   lightboxImageEl.setAttribute("src", `${url}`);
   lightboxImageEl.setAttribute("alt", `${alt}`);
@@ -112,16 +108,14 @@ function onButtonCloseModalClick(event) {
   attributeClearing();
 }
 
-//Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"]
 function closeModal() {
   window.removeEventListener("keydown", onKeyDown);
   overlayEl.removeEventListener("click", onOverlayClick);
-  sliderControllLeft.removeEventListener('click', prev);;
-   sliderControllRight.removeEventListener('click', next);
+  sliderControlLeft.removeEventListener('click', prev);;
+   sliderControlRight.removeEventListener('click', next);
   lightboxEl.classList.remove("is-open");
 }
 
-//Очистка значения атрибута src элемента img.lightbox__image.
 function attributeClearing() {
   lightboxImageEl.removeAttribute("src");
   lightboxImageEl.removeAttribute("alt");
@@ -168,36 +162,5 @@ function prev() {
   }
 }
     
-//cлайдер
-
-
-
-// function previousImage(event) {
-// prev()
-//   let index = photos.findIndex((el) => {
-//     return el.original === lightboxImageEl.getAttribute("src");
-//   });
-// if (index <= photos.length && index >= 0) {
-//     index -= 1;
-//   } else { return; }
-//   const previousPic = photos[index].original;
-//   lightboxImageEl.setAttribute("src", previousPic);
-// }
-
-// function nextImage(event) {
-// next()
-  // let index = photos.findIndex((el) => {
-  //   return el.original === lightboxImageEl.getAttribute("src");
-  // });
-  
-  // if (index <= photos.length && index >= 0) {
-  //   index += 1;
-  // } else { return; }
-  
-  // const previousPic = photos[index].original;
-  // lightboxImageEl.setAttribute("src", previousPic);
-
-// }
-
 
 
